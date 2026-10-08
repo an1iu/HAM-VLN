@@ -1,0 +1,241 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f8f7f4">
+  <meta name="description" content="HAM-VLN equips training-free vision-and-language navigation with hierarchical agentic memory and a depth-grounded world graph for selective, subgoal-conditioned recall.">
+  <meta name="author" content="An Liu, Bingxi Liu, Hongyu Ding, Yixuan Jiang, Yaran Chen, Fulin Tang, Cong Leng, Hong Zhang, Jian Cheng">
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="HAM-VLN: Harnessing Hierarchical Agentic Memory for Zero-Shot Vision-and-Language Navigation">
+  <meta property="og:description" content="Selective memory for long-horizon, training-free vision-and-language navigation.">
+  <meta property="og:image" content="assets/dence.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="assets/dence.png">
+  <meta name="citation_title" content="HAM-VLN: Harnessing Hierarchical Agentic Memory for Zero-Shot Vision-and-Language Navigation">
+  <meta name="citation_author" content="Liu, An">
+  <meta name="citation_author" content="Liu, Bingxi">
+  <meta name="citation_author" content="Ding, Hongyu">
+  <meta name="citation_author" content="Jiang, Yixuan">
+  <meta name="citation_author" content="Chen, Yaran">
+  <meta name="citation_author" content="Tang, Fulin">
+  <meta name="citation_author" content="Leng, Cong">
+  <meta name="citation_author" content="Zhang, Hong">
+  <meta name="citation_author" content="Cheng, Jian">
+  <meta name="citation_date" content="2026/07/31">
+  <meta name="citation_arxiv_id" content="2607.29600">
+  <meta name="citation_pdf_url" content="https://arxiv.org/pdf/2607.29600">
+  <title>HAM-VLN | Hierarchical Agentic Memory for Navigation</title>
+  <link rel="icon" type="image/svg+xml" href="static/images/ham-favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="static/css/index.css">
+  <script>
+    window.MathJax = {
+      tex: { inlineMath: [['\\(', '\\)']], displayMath: [['\\[', '\\]']] },
+      options: { skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'] }
+    };
+  </script>
+  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+  <script defer src="static/js/demo-config.js"></script>
+  <script defer src="static/js/index.js"></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="site-header">
+    <div class="container header-inner">
+      <a class="site-brand" href="#top" aria-label="HAM-VLN, back to top">
+        <svg class="brand-mark" viewBox="0 0 64 64" aria-hidden="true" focusable="false">
+          <rect width="64" height="64" rx="15" fill="#eceff5"/>
+          <path d="M17 34 43 18M17 34l26 12" stroke="#66788f" stroke-width="3" stroke-linecap="round"/>
+          <circle cx="17" cy="34" r="7" fill="#F5F1E8" stroke="#c9ceda" stroke-width="1"/>
+          <circle cx="43" cy="18" r="7" fill="#D6D4E9"/>
+          <circle cx="43" cy="46" r="7" fill="#F9C2B3"/>
+        </svg>
+        <span class="brand-name">HAM-VLN</span>
+      </a>
+      <nav class="site-nav" aria-label="Page sections">
+        <a href="#abstract">Abstract</a><a href="#overview">Overview</a><a href="#method">Method</a><a href="#results">Results</a><a href="#demo" id="demo-nav" hidden>Demo</a><a href="#citation">BibTeX</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main">
+    <section class="hero" id="top" aria-labelledby="page-title">
+      <div class="container hero-content">
+        <h1 id="page-title">HAM-VLN: Harnessing Hierarchical Agentic Memory for Zero-Shot Vision-and-Language Navigation</h1>
+        <p class="authors"><span>An Liu<sup>1</sup></span><span>Bingxi Liu<sup>2,3</sup></span><span>Hongyu Ding<sup>1,4</sup></span><span>Yixuan Jiang<sup>1,4</sup></span><span>Yaran Chen<sup>5</sup></span><span>Fulin Tang<sup>1,*</sup></span><span>Cong Leng<sup>6</sup></span><span>Hong Zhang<sup>2</sup></span><span>Jian Cheng<sup>1</sup></span></p>
+        <div class="affiliations" aria-label="Author affiliations">
+          <span><sup>1</sup> Institute of Automation, Chinese Academy of Sciences</span>
+          <span><sup>2</sup> Southern University of Science and Technology</span>
+          <span><sup>3</sup> Pengcheng Laboratory</span>
+          <span><sup>4</sup> Nanjing University</span>
+          <span><sup>5</sup> Xi'an Jiaotong-Liverpool University</span>
+          <span><sup>6</sup> MAICRO</span>
+        </div>
+        <p class="corresponding-note">* Corresponding author</p>
+        <div class="hero-actions" aria-label="Project links">
+          <a class="button button-primary" href="https://arxiv.org/abs/2607.29600" target="_blank" rel="noopener noreferrer">
+            <svg class="button-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M3.8423 0a1.0037 1.0037 0 0 0-.922.6078c-.1536.3687-.0438.6275.2938 1.1113l6.9185 8.3597-1.0223 1.1058a1.0393 1.0393 0 0 0 .003 1.4229l1.2292 1.3135-5.4391 6.4444c-.2803.299-.4538.823-.2971 1.1986a1.0253 1.0253 0 0 0 .9585.635.9133.9133 0 0 0 .6891-.3405l5.783-6.126 7.4902 8.0051a.8527.8527 0 0 0 .6835.2597.9575.9575 0 0 0 .8777-.6138c.1577-.377-.017-.7502-.306-1.1407l-7.0518-8.3418 1.0632-1.13a.9626.9626 0 0 0 .0089-1.3165L4.6336.4639s-.3733-.4535-.768-.463zm0 .272h.0166c.2179.0052.4874.2715.5644.3639l.005.006.0052.0055 10.169 10.9905a.6915.6915 0 0 1-.0072.945l-1.0666 1.133-1.4982-1.7724-8.5994-10.39c-.3286-.472-.352-.6183-.2592-.841a.7307.7307 0 0 1 .6704-.4401Zm14.341 1.5701a.877.877 0 0 0-.6554.2418l-5.6962 6.1584 1.6944 1.8319 5.3089-6.5138c.3251-.4335.479-.6603.3247-1.0292a1.1205 1.1205 0 0 0-.9763-.689zm-7.6557 12.2823 1.3186 1.4135-5.7864 6.1295a.6494.6494 0 0 1-.4959.26.7516.7516 0 0 1-.706-.4669c-.1119-.2682.0359-.6864.2442-.9083l.0051-.0055.0047-.0055z"/></svg>
+            arXiv
+          </a>
+          <span class="button button-muted" aria-label="Code coming soon">
+            <svg class="button-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 .3a12 12 0 0 0-3.8 23.4c.6.1.8-.3.8-.6v-2c-3.3.7-4-1.6-4-1.6-.6-1.4-1.4-1.8-1.4-1.8-1-.7.1-.7.1-.7 1.2.1 1.8 1.2 1.8 1.2 1 1.8 2.8 1.3 3.5 1 0-.8.4-1.3.7-1.6-2.7-.3-5.5-1.3-5.5-6 0-1.2.5-2.3 1.3-3.1-.2-.4-.6-1.6.1-3.2 0 0 1-.3 3.4 1.2a11.5 11.5 0 0 1 6 0c2.3-1.5 3.3-1.2 3.3-1.2.7 1.6.3 2.8.1 3.2.8.8 1.3 1.9 1.3 3.1 0 4.6-2.8 5.6-5.5 6 .4.4.8 1.1.8 2.2v3.3c0 .3.2.7.8.6A12 12 0 0 0 12 .3Z"/></svg>
+            Code (Coming soon)
+          </span>
+        </div>
+      </div>
+    </section>
+
+    <section class="section section-abstract" id="abstract" aria-labelledby="abstract-title">
+      <div class="container">
+        <h2 id="abstract-title">Abstract</h2>
+        <p class="abstract-text">Vision-and-language navigation (VLN) requires agents to ground natural language instructions in visual observations and navigate to target locations. While recent large vision-language models show promise, their application to long-horizon navigation is limited by context length constraints when processing complete visual histories. We introduce HAM-VLN, a training-free framework that addresses this challenge through hierarchical agentic memory. Our system maintains a compact world graph encoding spatial topology and object locations, updated continuously during navigation. Four functional memory views—working, episodic, semantic, and reflection—enable selective retrieval of task-relevant information conditioned on current subgoals. This approach achieves 61.0% success rate on R2R-CE, 52.7% on RxR-CE, and 79.7% on HM3D-v2 ObjectNav without task-specific training, while reducing API token usage by 67.2% compared to full visual history baselines.</p>
+      </div>
+    </section>
+
+    <section class="section section-overview" id="overview" aria-labelledby="overview-title">
+      <div class="container">
+        <h2 id="overview-title">Overview</h2>
+        <p class="section-intro">As navigation routes grow longer, raw panoramic observations consume increasing context and dense semantic maps scale with explored space. HAM-VLN maintains a compact, depth-grounded world graph that records visited places and observed objects, then retrieves only the subset relevant to the current subgoal.</p>
+        <figure class="paper-figure figure-dence"><button class="figure-open" type="button" data-image="assets/dence.png" data-alt="Comparison of dense semantic maps, raw visual history, and HAM-VLN's world graph with agentic memory" aria-label="Enlarge overview illustration"><img src="assets/dence.png" alt="Dense maps and raw visual history compared with a world graph and agentic memory" width="945" height="662" fetchpriority="high"></button></figure>
+      </div>
+    </section>
+
+    <section class="section section-method" id="method" aria-labelledby="method-title">
+      <div class="container">
+        <h2 id="method-title">Method</h2>
+        <p class="section-intro">At each waypoint, HAM-VLN integrates perception, planning, memory writing, and action selection in a single decision cycle. The system maintains four functional memory views that enable selective retrieval of navigation-relevant information.</p>
+        <figure class="paper-figure"><button class="figure-open" type="button" data-image="assets/pipeline.png" data-alt="HAM-VLN pipeline: world graph and four memory views, System 2 planning and write-back, System 1 action grounding" aria-label="Enlarge HAM-VLN pipeline"><img src="assets/pipeline.png" alt="HAM-VLN pipeline with world graph, four memory views, System 2 planning, structured write-back and System 1 action grounding" width="1764" height="1166" loading="lazy"></button></figure>
+
+        <h3>Memory Architecture</h3>
+
+        <figure class="paper-figure"><button class="figure-open" type="button" data-image="assets/memory.png" data-alt="Illustration of working, episodic, semantic, and reflection memory over a navigation episode" aria-label="Enlarge memory views"><img src="assets/memory.png" alt="Four functional memory views layered over a navigation route" width="1575" height="914" loading="lazy"></button></figure>
+
+      </div>
+    </section>
+
+    <section class="section section-results" id="results" aria-labelledby="results-title">
+      <div class="container">
+        <h2 id="results-title">Results</h2>
+        <p class="section-intro">HAM-VLN is evaluated without task-specific training on R2R-CE, RxR-CE, and HM3D-v2 ObjectNav benchmarks. All results are averaged over three runs on fixed 100-episode val-unseen subsets.</p>
+        <div class="table-stack">
+          <article class="table-panel">
+            <div class="table-heading"><h3>VLN-CE: R2R and RxR</h3></div>
+            <div class="table-scroll" role="region" aria-label="Full VLN-CE R2R and RxR results" tabindex="0">
+              <table class="full-results-table"><caption>All R2R-CE and RxR-CE methods compared in the paper</caption>
+                <thead>
+                  <tr>
+                    <th scope="col" rowspan="2">Method</th>
+                    <th scope="colgroup" colspan="4">R2R val-unseen</th>
+                    <th scope="colgroup" colspan="4">RxR val-unseen</th>
+                  </tr>
+                  <tr>
+                    <th scope="col">NE ↓</th>
+                    <th scope="col">OSR ↑</th>
+                    <th scope="col">SR ↑</th>
+                    <th scope="col">SPL ↑</th>
+                    <th scope="col">NE ↓</th>
+                    <th scope="col">SR ↑</th>
+                    <th scope="col">SPL ↑</th>
+                    <th scope="col">nDTW ↑</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr class="group-row"><th scope="rowgroup" colspan="9">Supervised learning</th></tr>
+                  <tr><th scope="row">NaVid</th><td>\(5.47\)</td><td>\(49.1\)</td><td>\(37.4\)</td><td>\(35.9\)</td><td>\(8.41\)</td><td>\(34.5\)</td><td>\(23.8\)</td><td>—</td></tr>
+                  <tr><th scope="row">Uni-NaVid</th><td>\(5.58\)</td><td>\(53.3\)</td><td>\(47.0\)</td><td>\(42.7\)</td><td>\(6.24\)</td><td>\(48.7\)</td><td>\(40.9\)</td><td>—</td></tr>
+                  <tr><th scope="row">NaVILA</th><td>\(5.22\)</td><td>\(62.5\)</td><td>\(54.0\)</td><td>\(49.0\)</td><td>\(6.77\)</td><td>\(49.3\)</td><td>\(44.0\)</td><td>\(58.8\)</td></tr>
+                  <tr><th scope="row">StreamVLN</th><td>\(4.98\)</td><td>\(64.2\)</td><td>\(56.9\)</td><td>\(51.9\)</td><td>\(6.22\)</td><td>\(52.9\)</td><td>\(46.0\)</td><td>\(61.9\)</td></tr>
+                  <tr><th scope="row">JanusVLN</th><td>\(4.78\)</td><td>\(65.2\)</td><td>\(60.5\)</td><td>\(56.8\)</td><td>\(6.06\)</td><td>\(56.2\)</td><td>\(47.5\)</td><td>\(62.1\)</td></tr>
+                  <tr><th scope="row">OmniNav</th><td>\(3.74\)</td><td>\(74.6\)</td><td>\(69.5\)</td><td>\(66.1\)</td><td>\(3.77\)</td><td>\(73.6\)</td><td>\(62.0\)</td><td>—</td></tr>
+                  <tr><th scope="row">InternVLA-N1</th><td>\(4.83\)</td><td>\(63.3\)</td><td>\(58.2\)</td><td>\(54.0\)</td><td>\(5.91\)</td><td>\(53.5\)</td><td>\(46.1\)</td><td>\(65.3\)</td></tr>
+                  <tr><th scope="row">ABot-N0</th><td>\(3.78\)</td><td>\(70.8\)</td><td>\(66.4\)</td><td>\(63.9\)</td><td>\(3.83\)</td><td>\(69.3\)</td><td>\(60.0\)</td><td>—</td></tr>
+                  <tr><th scope="row">SPAN-Nav</th><td>\(4.07\)</td><td>\(75.3\)</td><td>\(66.3\)</td><td>\(59.3\)</td><td>\(4.20\)</td><td>\(69.7\)</td><td>\(60.1\)</td><td>\(67.9\)</td></tr>
+                  <tr class="group-row"><th scope="rowgroup" colspan="9">Zero-shot / training-free</th></tr>
+                  <tr><th scope="row">InstructNav</th><td>\(6.89\)</td><td>\(47.0\)</td><td>\(31.0\)</td><td>\(24.0\)</td><td>—</td><td>—</td><td>—</td><td>—</td></tr>
+                  <tr><th scope="row">Open-Nav</th><td>\(6.70\)</td><td>\(23.0\)</td><td>\(19.0\)</td><td>\(16.1\)</td><td>—</td><td>—</td><td>—</td><td>—</td></tr>
+                  <tr><th scope="row">CA-Nav</th><td>\(7.58\)</td><td>\(48.0\)</td><td>\(25.3\)</td><td>\(10.8\)</td><td>\(10.4\)</td><td>\(19.0\)</td><td>\(6.0\)</td><td>\(13.5\)</td></tr>
+                  <tr><th scope="row">SmartWay</th><td>\(7.01\)</td><td>\(51.0\)</td><td>\(29.0\)</td><td>\(22.5\)</td><td>—</td><td>—</td><td>—</td><td>—</td></tr>
+                  <tr><th scope="row">GC-VLN</th><td>\(7.30\)</td><td>\(41.8\)</td><td>\(33.6\)</td><td>\(16.3\)</td><td>\(8.80\)</td><td>\(33.8\)</td><td>\(13.8\)</td><td>—</td></tr>
+                  <tr><th scope="row">LaViRA</th><td>\(6.54\pm0.27\)</td><td>\(48.7\pm2.1\)</td><td>\(38.3\pm0.6\)</td><td>\(28.3\pm0.9\)</td><td>—</td><td>—</td><td>—</td><td>—</td></tr>
+                  <tr><th scope="row">Three-Step Nav</th><td>\(5.87\)</td><td>\(39.0\)</td><td>\(34.0\)</td><td>\(29.1\)</td><td>\(9.21\)</td><td>\(22.0\)</td><td>\(16.1\)</td><td>\(45.7\)</td></tr>
+                  <tr><th scope="row">HiMemVLN</th><td>\(6.65\)</td><td>\(36.0\)</td><td>\(30.0\)</td><td>\(26.9\)</td><td>—</td><td>—</td><td>—</td><td>—</td></tr>
+                  <tr class="ours"><th scope="row">HAM-VLN</th><td>\(3.92\pm0.15\)</td><td>\(78.7\pm3.1\)</td><td>\(61.0\pm1.7\)</td><td>\(48.1\pm0.2\)</td><td>\(6.27\pm0.23\)</td><td>\(52.7\pm1.5\)</td><td>\(35.7\pm2.6\)</td><td>\(54.3\pm0.3\)</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </article>
+          <article class="table-panel objectnav-panel">
+            <div class="table-heading"><h3>HM3D-v2 ObjectNav</h3></div>
+            <div class="table-scroll" role="region" aria-label="Full HM3D-v2 ObjectNav results" tabindex="0">
+              <table class="objectnav-results-table"><caption>All HM3D-v2 ObjectNav methods compared in the paper</caption><thead><tr><th scope="col">Method</th><th scope="col">SR ↑</th><th scope="col">SPL ↑</th></tr></thead><tbody>
+                  <tr class="group-row"><th scope="rowgroup" colspan="3">Supervised learning</th></tr>
+                  <tr><th scope="row">DD-PPO</th><td>\(27.9\)</td><td>\(14.2\)</td></tr>
+                  <tr><th scope="row">Habitat-Web</th><td>\(57.6\)</td><td>\(23.8\)</td></tr>
+                  <tr><th scope="row">PIRLNav</th><td>\(70.4\)</td><td>\(34.1\)</td></tr>
+                  <tr><th scope="row">OVRL-v2</th><td>\(64.7\)</td><td>\(28.1\)</td></tr>
+                  <tr><th scope="row">Uni-NaVid</th><td>\(73.7\)</td><td>\(37.1\)</td></tr>
+                  <tr><th scope="row">FiLM-Nav</th><td>\(77.0\)</td><td>\(41.3\)</td></tr>
+                  <tr class="group-row"><th scope="rowgroup" colspan="3">Zero-shot / training-free</th></tr>
+                  <tr><th scope="row">L3MVN</th><td>\(54.2\)</td><td>\(25.5\)</td></tr>
+                  <tr><th scope="row">VLFM</th><td>\(62.6\)</td><td>\(31.0\)</td></tr>
+                  <tr><th scope="row">OpenFMNav</th><td>\(54.9\)</td><td>\(24.4\)</td></tr>
+                  <tr><th scope="row">InstructNav</th><td>\(58.0\)</td><td>\(20.9\)</td></tr>
+                  <tr><th scope="row">SG-Nav</th><td>\(54.0\)</td><td>\(24.9\)</td></tr>
+                  <tr><th scope="row">ApexNav</th><td>\(76.2\)</td><td>\(38.0\)</td></tr>
+                  <tr><th scope="row">DSCD-Nav</th><td>\(73.0\)</td><td>\(38.7\)</td></tr>
+                  <tr><th scope="row">ReMemNav</th><td>\(67.8\)</td><td>\(36.6\)</td></tr>
+                  <tr class="ours"><th scope="row">HAM-VLN</th><td>\(79.7\pm0.5\)</td><td>\(43.2\pm0.6\)</td></tr>
+                </tbody></table>
+            </div>
+          </article>
+        </div>
+        <p class="results-note">HAM-VLN values are mean ± standard deviation over three runs.</p>
+      </div>
+    </section>
+
+    <section class="section section-case" id="case-study" aria-labelledby="case-title">
+      <div class="container">
+        <h2 id="case-title">Visualization</h2>
+        <figure class="paper-figure"><button class="figure-open" type="button" data-image="assets/episode3.png" data-alt="Five-step navigation episode: landmark, missed stop, backtrack, retrieve, and success" aria-label="Enlarge navigation episode"><img src="assets/episode3.png" alt="Navigation episode showing the landmark, missed stop, backtracking, memory retrieval and successful stop" width="1638" height="504" loading="lazy"></button></figure>
+      </div>
+    </section>
+
+    <!-- Add video entries in static/js/demo-config.js. This section stays hidden while the list is empty. -->
+    <section class="section section-demo" id="demo" aria-labelledby="demo-title" hidden>
+      <div class="container">
+        <h2 id="demo-title">Real-World Experiments</h2>
+        <p class="section-intro">HAM-VLN running on a Unitree Go2.</p>
+        <div class="demo-carousel">
+          <div class="demo-viewport" id="demo-viewport" role="group" aria-roledescription="carousel" aria-label="HAM-VLN real-robot demonstrations" tabindex="0">
+            <div class="demo-track" id="demo-track"></div>
+          </div>
+          <button type="button" class="demo-arrow demo-arrow-prev" id="demo-prev" aria-label="Previous demo" aria-controls="demo-track" disabled>
+            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M15.4 4.6 8 12l7.4 7.4 1.6-1.6L11.2 12l5.8-5.8z"/></svg>
+          </button>
+          <button type="button" class="demo-arrow demo-arrow-next" id="demo-next" aria-label="Next demo" aria-controls="demo-track" disabled>
+            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M8.6 4.6 7 6.2 12.8 12 7 17.8l1.6 1.6L16 12z"/></svg>
+          </button>
+          <div class="demo-dots" id="demo-dots" role="tablist" aria-label="Choose demo"></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section section-citation" id="citation" aria-labelledby="citation-title">
+      <div class="container">
+        <h2 id="citation-title">BibTeX</h2>
+        <pre class="bibtex-block"><code>@article{liu2026hamvln,
+  title={HAM-VLN: Harnessing Hierarchical Agentic Memory for Zero-Shot Vision-and-Language Navigation},
+  author={Liu, An and Liu, Bingxi and Ding, Hongyu and Jiang, Yixuan and Chen, Yaran and Tang, Fulin and Leng, Cong and Zhang, Hong and Cheng, Jian},
+  journal={arXiv preprint arXiv:2607.29600},
+  year={2026}
+}</code></pre>
+      </div>
+    </section>
+  </main>
+
+  <dialog class="image-dialog" id="image-dialog" aria-label="Expanded research figure"><button type="button" class="dialog-close" aria-label="Close image">×</button><img alt=""><p>Click outside the image or press Esc to close.</p></dialog>
+</body>
+</html>
